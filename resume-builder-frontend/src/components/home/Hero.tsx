@@ -123,7 +123,7 @@ const Hero = () => {
         </h1>
         <p className="text-center text-base text-gray-600 max-w-md px-4">
           Workflows that never miss. automation that helps your team do more,
-          effortlessly.
+          effortlessly    kkkkkkkkkkkkkkkkkkk.
         </p>
 
         <div className="flex gap-4 py-10">
