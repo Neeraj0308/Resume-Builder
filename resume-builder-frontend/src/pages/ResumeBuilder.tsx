@@ -2,6 +2,7 @@
 import {
   ArrowLeft,
   Briefcase,
+  CheckCircle2,
   ChevronLeft,
   ChevronRight,
   DownloadIcon,
@@ -10,6 +11,7 @@ import {
   GraduationCap,
   Sparkles,
   User,
+  XCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -25,9 +27,11 @@ import { getJson, postJson, putJson } from "../services/api";
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
 
-  const [saveStatus, setSaveStatus] = useState<"success" | "error" | null>(
-    null,
-  );
+  const [toast, setToast] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
   const [resumeData, setResumeData] = useState({
     id: "",
     title: "",
@@ -41,6 +45,14 @@ const ResumeBuilder = () => {
     accent_color: "#3982f6",
     public: false,
   });
+
+  // Auto-dismiss toast after 3 seconds
+  useEffect(() => {
+    if (!toast) return;
+
+    const timer = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timer);
+  }, [toast]);
 
   const loadExistingResume = async () => {
     if (!resumeId) return;
@@ -79,12 +91,14 @@ const ResumeBuilder = () => {
     { id: "skills", name: "Skills", icon: Sparkles },
   ];
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+   
   useEffect(() => {
     if (resumeId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       loadExistingResume();
     }
-  }, [resumeId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ resumeId]);
 
   const templates = [
     { id: "classic", name: "Classic" },
@@ -132,7 +146,10 @@ const ResumeBuilder = () => {
     const email = personalInfo.email?.trim();
 
     if (!fullName || !email) {
-      setSaveStatus("error");
+      setToast({
+        type: "error",
+        message: "Please enter the required fields first",
+      });
       return;
     }
 
@@ -165,13 +182,16 @@ const ResumeBuilder = () => {
         }
       }
 
-      setSaveStatus("success");
+      setToast({ type: "success", message: "Saved successfully" });
       setActiveSectionIndex((prevIndex) =>
         Math.min(prevIndex + 1, sections.length - 1),
       );
     } catch (error) {
       console.error(error);
-      setSaveStatus("error");
+      setToast({
+        type: "error",
+        message: "Something went wrong while saving",
+      });
     }
   };
 
@@ -350,57 +370,60 @@ const ResumeBuilder = () => {
               </div>
             </div>
           </div>
-          {/* Right Panel - Preview */}
-          <div className="lg:col-span-7 max-lg:mt-6">
-            <div>{/* --- buttons --- */}</div>
-            {/* -- resume preview -- */}
-            <div className="lg:col-span-7 max-lg:mt-6">
-              <div className=" flex items-center justify-between relative w-full">
-                <div></div>
-                <button
-                  onClick={() => downloadResume()}
-                  className="flex items-center gap-2 px-6 py-2 text-xs bg-linear-to-br from-green-100 to to-green-600 rounded-lg ring-green-300 hover:ring transition-colors"
-                >
-                  <DownloadIcon className="size-4" /> Download
-                </button>
-              </div>
-            </div>
-            <ResumePreview
-              data={resumeData}
-              template={resumeData.template}
-              accentColor={resumeData.accent_color}
-            />
-          </div>
+         {/* Right Panel - Preview */}
+<div className="lg:col-span-7 max-lg:mt-6">
+  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="flex items-center justify-between mb-5 pb-5 border-b border-gray-100">
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900">
+          Live Preview
+        </h3>
+        <p className="text-sm text-gray-500 mt-0.5">
+          See how your resume looks in real time
+        </p>
+      </div>
+      <button
+        onClick={() => downloadResume()}
+        className="group flex items-center gap-2.5 px-5 py-3 text-sm font-semibold text-white bg-linear-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 transition-all duration-200"
+      >
+        <DownloadIcon className="size-4 group-hover:translate-y-0.5 transition-transform duration-200" />
+        Download PDF
+      </button>
+    </div>
+
+   <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
+      <ResumePreview
+        data={resumeData}
+        template={resumeData.template}
+        accentColor={resumeData.accent_color}
+      />
+    </div>
+  </div>
+</div>
         </div>
       </div>
 
-      {saveStatus && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center">
-            {saveStatus === "success" ? (
-              <>
-                <p className="text-green-600 font-semibold text-lg">
-                  Saved successfully
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Your data has been saved.
-                </p>
-              </>
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-6 right-6 z-50 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div
+            className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border min-w-70 max-w-sm ${
+              toast.type === "success"
+                ? "bg-green-50 border-green-200 text-green-800"
+                : "bg-red-50 border-red-200 text-red-800"
+            }`}
+          >
+            {toast.type === "success" ? (
+              <CheckCircle2 className="size-5 shrink-0 text-green-600" />
             ) : (
-              <>
-                <p className="text-red-600 font-semibold text-lg">
-                  Please fill the required data
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  Full name and email are required.
-                </p>
-              </>
+              <XCircle className="size-5 shrink-0 text-red-600" />
             )}
+            <p className="text-sm font-medium flex-1">{toast.message}</p>
             <button
-              onClick={() => setSaveStatus(null)}
-              className="mt-4 px-4 py-2 bg-gray-800 text-white rounded-lg text-sm"
+              onClick={() => setToast(null)}
+              className="text-xs opacity-60 hover:opacity-100 transition-opacity"
             >
-              OK
+              ✕
             </button>
           </div>
         </div>

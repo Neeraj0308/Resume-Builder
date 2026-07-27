@@ -1,5 +1,5 @@
 import { Briefcase, Plus, Sparkles, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { enhanceText } from "../services/aiService";
 
 type Experience = {
@@ -72,6 +72,10 @@ const ExperienceForm = ({
     onChange(updated);
   };
 
+  const monthInputRef = useRef<HTMLInputElement>(null);
+  const monthInputReff = useRef<HTMLInputElement>(null);
+
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -135,24 +139,26 @@ const ExperienceForm = ({
                   placeholder="Position"
                 />
                 <input
+                  ref={monthInputRef}
                   type="month"
-                  min="1980"
                   max={currentMonth}
                   value={experience.start_date}
                   onChange={(e) =>
                     updateExperience(index, "start_date", e.target.value)
                   }
-                  onKeyDown={(e) => e.preventDefault()}
+                   onFocus={() => monthInputRef.current?.showPicker()}
                   onPaste={(e) => e.preventDefault()}
                   className="px-3 py-2 text-sm rounded-lg"
                   placeholder="Start Date"
                 />
                 {!experience.is_current && (
                   <input
+                    ref={monthInputReff}
                     type="month"
                     min="2000-01"
                     max={currentMonth}
                     value={experience.end_date}
+                     onFocus={() => monthInputReff.current?.showPicker()}
                     onChange={(e) =>
                       updateExperience(index, "end_date", e.target.value)
                     }
