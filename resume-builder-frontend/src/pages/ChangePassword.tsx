@@ -39,11 +39,12 @@ const ChangePassword = () => {
     try {
       const token = localStorage.getItem("token");
 
-      await axios.post(
+      await axios.put(
         "http://localhost:5000/api/auth/change-password",
         {
           currentPassword,
           newPassword,
+          confirmPassword
         },
         {
           headers: {

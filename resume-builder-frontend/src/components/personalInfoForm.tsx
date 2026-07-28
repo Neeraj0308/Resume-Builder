@@ -61,7 +61,7 @@ const personalInfoForm = ({ data, onChange }: PersonalInfoFormProps) => {
       type: "email",
       required: true,
     },
-    { key: "phone", label: "Phone Number", icon: Phone, type: "tel" },
+    { key: "phone", label: "Phone Number", icon: Phone, type: "number" },
     { key: "location", label: "Location", icon: MapPin, type: "text" },
     { key: "profession", label: "Profession", icon: Briefcase, type: "text" },
     {
