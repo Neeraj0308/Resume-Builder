@@ -10,6 +10,7 @@ import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ChangePassword from "./pages/ChangePassword";
+import NotFound from "./pages/NotFound";
 
 const App = () => {
   return (
@@ -32,6 +33,7 @@ const App = () => {
              <Route path="create-password" element={<ChangePassword />} />
           </Route>
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
