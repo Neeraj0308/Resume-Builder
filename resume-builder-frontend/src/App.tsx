@@ -9,6 +9,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ChangePassword from "./pages/ChangePassword";
 
 const App = () => {
   return (
@@ -17,7 +18,7 @@ const App = () => {
         <Route>
           <Route path="/" element={<Home />} />
           <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
+          <Route path="sign-up" element={<Signup />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="verify-otp" element={<VerifyOtp />} />
           <Route path="reset-password" element={<ResetPassword />} />
@@ -28,6 +29,7 @@ const App = () => {
               <Route index element={<Dashboard />} />
               <Route path="builder/:resumeId" element={<ResumeBuilder />} />
             </Route>
+             <Route path="create-password" element={<ChangePassword />} />
           </Route>
         </Route>
       </Routes>
