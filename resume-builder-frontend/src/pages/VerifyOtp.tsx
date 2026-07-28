@@ -58,7 +58,7 @@ const VerifyOtp = () => {
       setTimeout(() => {
         navigate("/reset-password", { state: { email } });
       }, 800);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setToast({
         type: "error",
@@ -74,12 +74,15 @@ const VerifyOtp = () => {
 
     setResending(true);
     try {
-      await axios.post("http://localhost:5000/api/auth/resend-otp", {
-        email,
-      });
+      await axios.post(
+        "http://localhost:5000/api/auth/forgot-password/resend-otp",
+        {
+          email,
+        },
+      );
       setToast({ type: "success", message: "OTP resent to your email" });
       setCooldown(30);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setToast({
         type: "error",
@@ -97,7 +100,8 @@ const VerifyOtp = () => {
           Verify OTP
         </h2>
         <p className="text-sm text-gray-400 mb-6">
-          Enter the OTP sent to <span className="font-medium text-gray-300">{email}</span>
+          Enter the OTP sent to{" "}
+          <span className="font-medium text-gray-300">{email}</span>
         </p>
 
         <form onSubmit={handleVerify} className="space-y-4">
@@ -122,9 +126,7 @@ const VerifyOtp = () => {
 
         <div className="mt-4 text-center">
           {cooldown > 0 ? (
-            <p className="text-sm text-gray-500">
-              Resend OTP in {cooldown}s
-            </p>
+            <p className="text-sm text-gray-500">Resend OTP in {cooldown}s</p>
           ) : (
             <button
               onClick={handleResend}

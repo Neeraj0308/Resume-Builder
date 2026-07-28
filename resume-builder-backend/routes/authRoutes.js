@@ -4,8 +4,10 @@ import upload from "../config/multer.js";
 import {
   register,
   verifyEmail,
+  resendOTP,
   login,
   forgotPassword,
+  resendForgotPasswordOTP,
   verifyOTP,
   resetPassword,
   profile,
@@ -23,7 +25,8 @@ router.post("/verify-email", verifyEmail);
 router.post("/login", login);
 
 router.post("/forgot-password", forgotPassword);
-router.post("/verify-otp", verifyOTP);
+router.post("/forgot-password/resend-otp", resendForgotPasswordOTP);
+router.post("/resend-otp", resendOTP);
 router.post("/reset-password", resetPassword);
 router.put("/change-password", authMiddleware, changePassword);
 
