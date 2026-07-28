@@ -40,12 +40,10 @@ const ChangePassword = () => {
       const token = localStorage.getItem("token");
 
       await axios.put(
-      await axios.put(
         "http://localhost:5000/api/auth/change-password",
         {
           currentPassword,
           newPassword,
-          confirmPassword
           confirmPassword,
         },
         {
