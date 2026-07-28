@@ -26,7 +26,6 @@ router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
 
 router.get("/profile", authMiddleware, profile);
-
 router.put("/profile", authMiddleware, upload.single("image"), updateProfile);
 
 router.post("/logout", logout);
