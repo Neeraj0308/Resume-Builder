@@ -1,53 +1,43 @@
-import React from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { postJson } from "../services/api";
-import { Mail, Lock, Eye, EyeOff, LogIn } from "lucide-react";
+import axios from "axios";
+import { Mail, Lock, User, Eye, EyeOff, UserPlus } from "lucide-react";
 
-const Login = () => {
+const Signup = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [loading, setLoading] = React.useState(false);
-  const [message, setMessage] = React.useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
-
-  const [formData, setFormData] = React.useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
+    setError("");
 
+    if (!name.trim() || !email.trim() || !password) {
+      setError("Please fill all fields");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const data = await postJson<{
-        message?: string;
-        token?: string;
-        success?: boolean;
-      }>("/api/auth/login", {
-        email: formData.email,
-        password: formData.password,
+      const res = await axios.post("http://localhost:5000/api/auth/signup", {
+        name: name.trim(),
+        email: email.trim(),
+        password,
       });
 
-      if (data.success) {
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-        }
-        setMessage(data.message || "Success");
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
         navigate("/app");
       } else {
-        setMessage(data.message || "Something went wrong");
+        navigate("/login");
       }
-    } catch (error) {
-      setMessage(
-        error instanceof Error ? error.message : "Something went wrong",
-      );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Signup failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -61,26 +51,37 @@ const Login = () => {
       >
         {/* Logo / Icon badge */}
         <div className="w-14 h-14 mx-auto rounded-2xl bg-linear-to-br from-indigo-500 to-indigo-700 flex items-center justify-center shadow-lg shadow-indigo-900/50">
-          <LogIn className="size-6 text-white" />
+          <UserPlus className="size-6 text-white" />
         </div>
 
         <h1 className="text-white text-3xl mt-5 font-semibold tracking-tight">
-          Welcome back
+          Create account
         </h1>
 
         <p className="text-gray-400 text-sm mt-2">
-          Log in to continue to your account
+          Sign up to start building your resume
         </p>
 
         <div className="flex items-center w-full mt-8 bg-white/5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-indigo-500 h-13 rounded-xl overflow-hidden pl-4 gap-3 transition-all">
+          <User className="size-4 text-white/50 shrink-0" />
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full h-full bg-transparent text-white placeholder-white/40 border-none outline-none text-sm"
+            required
+          />
+        </div>
+
+        <div className="flex items-center w-full mt-3 bg-white/5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-indigo-500 h-13 rounded-xl overflow-hidden pl-4 gap-3 transition-all">
           <Mail className="size-4 text-white/50 shrink-0" />
           <input
             type="email"
-            name="email"
             placeholder="Email id"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full h-full bg-transparent text-white placeholder-white/40 border-none outline-none text-sm"
-            value={formData.email}
-            onChange={handleChange}
             required
           />
         </div>
@@ -89,11 +90,10 @@ const Login = () => {
           <Lock className="size-4 text-white/50 shrink-0" />
           <input
             type={showPassword ? "text" : "password"}
-            name="password"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full h-full bg-transparent text-white placeholder-white/40 border-none outline-none text-sm"
-            value={formData.password}
-            onChange={handleChange}
             required
           />
           <button
@@ -110,18 +110,9 @@ const Login = () => {
           </button>
         </div>
 
-        <div className="mt-3 text-right">
-          <Link
-            to="/forgot-password"
-            className="text-sm text-indigo-400 hover:text-indigo-300 transition-colors"
-          >
-            Forgot password?
-          </Link>
-        </div>
-
-        {message && (
-          <p className="mt-4 text-sm text-indigo-200 bg-indigo-500/10 border border-indigo-500/20 rounded-lg py-2 px-3">
-            {message}
+        {error && (
+          <p className="mt-4 text-sm text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg py-2 px-3">
+            {error}
           </p>
         )}
 
@@ -133,20 +124,20 @@ const Login = () => {
           {loading ? (
             <span className="inline-flex items-center gap-2">
               <span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Please wait...
+              Creating account...
             </span>
           ) : (
-            "Login"
+            "Sign Up"
           )}
         </button>
 
         <p className="text-gray-400 text-sm mt-6">
-          Don't have an account?{" "}
+          Already have an account?{" "}
           <Link
-            to="/signup"
+            to="/login"
             className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
           >
-            Sign up
+            Log in
           </Link>
         </p>
       </form>
@@ -160,4 +151,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

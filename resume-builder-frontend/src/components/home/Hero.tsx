@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {Link,  useNavigate } from "react-router-dom";
 
 const Hero = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -128,13 +128,13 @@ const Hero = () => {
 
         <div className="flex gap-4 py-10">
           <Link
-            to="/app?state=register"
+            to="/login"
             className="md:block px-6 py-2 bg-green-500 hover:bg-indigo-700 active:scale-95 transition-all rounded-full text-white"
           >
             Get Started
           </Link>
           <Link
-            to="app?state=login"
+            to="/login"
             className="md:block px-6 py-2 border hover:bg-indigo-500 transition-all rounded-full textslate-700 hover:text-slate-900"
           >
             Login
