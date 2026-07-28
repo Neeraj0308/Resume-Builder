@@ -10,6 +10,7 @@ import {
   resetPassword,
   profile,
   updateProfile,
+  changePassword,
   logout,
 } from "../controllers/authController.js";
 
@@ -24,6 +25,7 @@ router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOTP);
 router.post("/reset-password", resetPassword);
+router.put("/change-password", authMiddleware, changePassword);
 
 router.get("/profile", authMiddleware, profile);
 router.put("/profile", authMiddleware, upload.single("image"), updateProfile);

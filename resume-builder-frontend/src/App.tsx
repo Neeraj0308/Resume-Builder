@@ -30,7 +30,7 @@ const App = () => {
               <Route index element={<Dashboard />} />
               <Route path="builder/:resumeId" element={<ResumeBuilder />} />
             </Route>
-             <Route path="create-password" element={<ChangePassword />} />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Route>
         </Route>
         <Route path="*" element={<NotFound />} />
