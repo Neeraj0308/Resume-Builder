@@ -40,7 +40,8 @@ type PhotoHeaderTemplateProps = {
       degree?: string;
       field?: string;
       institution?: string;
-      graduation_date?: string;
+      graduation_StartDate?: string;
+      graduation_EndDate?: string;
       gpa?: string;
     }>;
     skills?: string[];
@@ -274,7 +275,7 @@ const PhotoHeaderTemplate: React.FC<PhotoHeaderTemplateProps> = ({
                     </h3>
                     <p className="text-sm text-gray-600">{edu.institution}</p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {formatDate(edu.graduation_date)}
+                     {formatDate(edu.graduation_StartDate)} - {formatDate(edu.graduation_EndDate)}
                       {edu.gpa && ` | GPA: ${edu.gpa}`}
                     </p>
                   </div>

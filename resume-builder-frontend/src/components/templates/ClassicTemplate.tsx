@@ -30,7 +30,8 @@ type ClassicTemplateProps = {
       degree?: string
       field?: string
       institution?: string
-      graduation_date?: string
+      graduation_StartDate?: string
+      graduation_EndDate?: string
       gpa?: string
     }>
     skills?: string[]
@@ -209,7 +210,8 @@ const ClassicTemplate: React.FC<ClassicTemplateProps> = ({ data, accentColor }) 
                   {edu.gpa && <p className="text-sm text-gray-600">GPA: {edu.gpa}</p>}
                 </div>
                 <div className="text-sm text-gray-600">
-                  <p>{formatDate(edu.graduation_date)}</p>
+                  <p>{formatDate(edu.graduation_StartDate)} -  {formatDate(edu.graduation_EndDate)}</p>
+                  
                 </div>
               </div>
             ))}
