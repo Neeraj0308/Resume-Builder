@@ -40,7 +40,8 @@ type CardTemplateProps = {
       degree?: string;
       field?: string;
       institution?: string;
-      graduation_date?: string;
+      graduation_StartDate?: string;
+      graduation_EndDate?: string;
       gpa?: string;
     }>;
     skills?: string[];
@@ -181,12 +182,26 @@ const CardTemplate: React.FC<CardTemplateProps> = ({ data, accentColor }) => {
                     <h3 className="font-bold text-gray-900 text-sm">
                       {edu.institution}
                     </h3>
-                    <p className="text-sm text-gray-700">
-                      {edu.degree} {edu.field && `in ${edu.field}`}
-                      {edu.graduation_date &&
-                        ` | ${formatDate(edu.graduation_date)}`}
-                      {edu.gpa && ` | GPA: ${edu.gpa}`}
-                    </p>
+                    <p className="text-xs text-gray-600 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 mt-0.5">
+  <span className="font-medium text-gray-700">
+    {edu.degree} {edu.field && `in ${edu.field}`}
+  </span>
+
+  {(edu.graduation_StartDate || edu.graduation_EndDate) && (
+    <span className="text-gray-500">
+      {edu.graduation_StartDate && formatDate(edu.graduation_StartDate)}
+      {edu.graduation_StartDate && edu.graduation_EndDate && " – "}
+      {edu.graduation_EndDate && formatDate(edu.graduation_EndDate)}
+    </span>
+  )}
+
+  {edu.gpa && (
+    <>
+      <span className="text-gray-300">•</span>
+      <span className="text-gray-500">GPA: {edu.gpa}</span>
+    </>
+  )}
+</p>
                   </div>
                 ))}
               </div>

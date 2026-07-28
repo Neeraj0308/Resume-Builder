@@ -5,7 +5,8 @@ type Education = {
   institution?: string;
   degree?: string;
   field?: string;
-  graduation_date?: string;
+  graduation_StartDate?: string;
+  graduation_EndDate?: string;
   gpa?: string;
 };
 
@@ -21,7 +22,8 @@ const EducationForm = ({
       institution: "",
       degree: "",
       field: "",
-      graduation_date: "",
+      graduation_StartDate: "",
+      graduation_EndDate: "",
       gpa: "",
     };
     onChange([...data, newEducation]);
@@ -42,6 +44,7 @@ const EducationForm = ({
     onChange(updated);
   };
    const monthInputRef = useRef<HTMLInputElement>(null);
+    const monthInputReff = useRef<HTMLInputElement>(null);
 
   return (
     <div className="space-y-6">
@@ -114,14 +117,30 @@ const EducationForm = ({
                   className="px-3 py-2 text-sm "
                   placeholder="course"
                 />
+
+                
                 <input
                   ref = {monthInputRef}
                   type="month"
-                  value={education.graduation_date || ""}
+                  value={education.graduation_StartDate || ""}
                   onChange={(e) =>
-                    updateEducation(index, "graduation_date", e.target.value)
+                    updateEducation(index, "graduation_StartDate", e.target.value)
                   }
                   onFocus={() => monthInputRef.current?.showPicker()}
+                  className="px-3 py-2 text-sm"
+                  placeholder="Graduation Date"
+                />
+
+
+                 
+                <input
+                  ref = {monthInputReff}
+                  type="month"
+                  value={education.graduation_EndDate || ""}
+                  onChange={(e) =>
+                    updateEducation(index, "graduation_EndDate", e.target.value)
+                  }
+                  onFocus={() => monthInputReff.current?.showPicker()}
                   className="px-3 py-2 text-sm"
                   placeholder="Graduation Date"
                 />

@@ -37,7 +37,8 @@ type ModernTemplateProps = {
       degree?: string;
       field?: string;
       institution?: string;
-      graduation_date?: string;
+      graduation_StartDate?: string;
+      graduation_EndDate?: string;
       gpa?: string;
     }>;
     skills?: string[];
@@ -245,7 +246,7 @@ const ModernTemplate: React.FC<ModernTemplateProps> = ({
                     </h3>
                     <p style={{ color: accentColor }}>{edu.institution}</p>
                     <div className="flex justify-between items-center text-sm text-gray-600">
-                      <span>{formatDate(edu.graduation_date)}</span>
+                      <span>{formatDate(edu.graduation_StartDate)} - {formatDate(edu.graduation_EndDate)}</span>
                       {edu.gpa && <span>GPA: {edu.gpa}</span>}
                     </div>
                   </div>
