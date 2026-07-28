@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Sparkles, X } from "lucide-react";
+import { Plus, Sparkles, X, Pencil } from "lucide-react";
 
 const SkillsForm = ({
   data,
@@ -9,8 +9,38 @@ const SkillsForm = ({
   onChange: (data: string[]) => void;
 }) => {
   const [newSkill, setNewSkill] = useState("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const addSkill = () => {
+    // If we're editing an existing skill, update it instead of adding new ones
+    if (editingIndex !== null) {
+      const trimmed = newSkill.trim();
+
+      if (trimmed === "") {
+        setEditingIndex(null);
+        setNewSkill("");
+        return;
+      }
+
+      // Check if the edited value clashes with another existing skill (not itself)
+      const isDuplicate = data.some(
+        (existing, i) =>
+          i !== editingIndex &&
+          existing.toLowerCase() === trimmed.toLowerCase(),
+      );
+
+      if (!isDuplicate) {
+        const updated = [...data];
+        updated[editingIndex] = trimmed;
+        onChange(updated);
+      }
+
+      setEditingIndex(null);
+      setNewSkill("");
+      return;
+    }
+
+    // Normal add flow (supports comma-separated multiple skills)
     const skills = newSkill
       .split(",")
       .map((skill) => skill.trim())
@@ -32,14 +62,42 @@ const SkillsForm = ({
 
   const removeSkill = (index: number) => {
     onChange(data.filter((_, itemIndex) => itemIndex !== index));
+
+    // If the skill being removed is the one currently being edited, reset the form
+    if (editingIndex === index) {
+      setEditingIndex(null);
+      setNewSkill("");
+    }
+  };
+
+  const startEditSkill = (index: number) => {
+    setEditingIndex(index);
+    setNewSkill(data[index]);
+  };
+
+  const cancelEdit = () => {
+    setEditingIndex(null);
+    setNewSkill("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === "," || e.key === " ") {
+    // While editing, only Enter should submit — comma/space would break a single skill name
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addSkill();
+      return;
+    }
+
+    if (editingIndex === null && (e.key === "," || e.key === " ")) {
       e.preventDefault();
       addSkill();
     }
+
+    if (e.key === "Escape" && editingIndex !== null) {
+      cancelEdit();
+    }
   };
+
   return (
     <div className="space-y-4">
       <div>
@@ -52,20 +110,41 @@ const SkillsForm = ({
       <div className="flex gap-2">
         <input
           type="text"
-          placeholder="Enter a skill"
+          placeholder={editingIndex !== null ? "Edit skill" : "Enter a skill"}
           value={newSkill}
           onChange={(e) => setNewSkill(e.target.value)}
           onKeyDown={handleKeyPress}
-          className="flex-1 px-3 py-2 text-sm"
+          className={`flex-1 px-3 py-2 text-sm rounded-lg border ${
+            editingIndex !== null
+              ? "border-blue-400 ring-1 ring-blue-200"
+              : "border-gray-300"
+          }`}
         />
         <button
           onClick={addSkill}
-          disabled={!newSkill.trim}
+          disabled={!newSkill.trim()}
           className="flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Plus className="size-4" />
-          Add
+          {editingIndex !== null ? (
+            <>
+              <Pencil className="size-4" />
+              Update
+            </>
+          ) : (
+            <>
+              <Plus className="size-4" />
+              Add
+            </>
+          )}
         </button>
+        {editingIndex !== null && (
+          <button
+            onClick={cancelEdit}
+            className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            Cancel
+          </button>
+        )}
       </div>
 
       {data.length > 0 ? (
@@ -73,12 +152,24 @@ const SkillsForm = ({
           {data.map((skill: string, index: number) => (
             <span
               key={index}
-              className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+              onClick={() => startEditSkill(index)}
+              className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm cursor-pointer transition-colors ${
+                editingIndex === index
+                  ? "bg-blue-600 text-white"
+                  : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+              }`}
             >
               {skill}
               <button
-                onClick={() => removeSkill(index)}
-                className="ml-1 hover:bg-blue-200 rounded-full p-0.5 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeSkill(index);
+                }}
+                className={`ml-1 rounded-full p-0.5 transition-colors ${
+                  editingIndex === index
+                    ? "hover:bg-blue-700"
+                    : "hover:bg-blue-200"
+                }`}
               >
                 <X className="w-3 h-3" />
               </button>

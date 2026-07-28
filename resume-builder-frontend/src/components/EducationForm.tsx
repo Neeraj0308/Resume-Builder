@@ -1,4 +1,5 @@
 import { GraduationCap, Plus, Trash2 } from "lucide-react";
+import { useRef } from "react";
 
 type Education = {
   institution?: string;
@@ -40,6 +41,7 @@ const EducationForm = ({
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
   };
+   const monthInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <div className="space-y-6">
@@ -113,11 +115,13 @@ const EducationForm = ({
                   placeholder="course"
                 />
                 <input
+                  ref = {monthInputRef}
                   type="month"
                   value={education.graduation_date || ""}
                   onChange={(e) =>
                     updateEducation(index, "graduation_date", e.target.value)
                   }
+                  onFocus={() => monthInputRef.current?.showPicker()}
                   className="px-3 py-2 text-sm"
                   placeholder="Graduation Date"
                 />

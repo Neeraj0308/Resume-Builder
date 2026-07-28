@@ -102,8 +102,20 @@ const personalInfoForm = ({ data, onChange }: PersonalInfoFormProps) => {
             onChange={async (e) => {
               if (!e.target.files?.[0]) return;
 
+
+                const file = e.target.files[0];
+
+                const MAX_IMAGE_SIZE = 2 *1024 ; // 1 MB
+
+                if (file.size > MAX_IMAGE_SIZE) {
+                alert("Image size should not exceed 1 MB.");
+                e.target.value = "";
+                return;
+                }
+
+
               const formData = new FormData();
-              formData.append("image", e.target.files[0]);
+              formData.append("image", file);
 
               const token = localStorage.getItem("token");
 
