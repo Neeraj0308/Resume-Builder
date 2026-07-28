@@ -9,6 +9,7 @@ import {
   FileText,
   FolderIcon,
   GraduationCap,
+  Pencil,
   Sparkles,
   User,
   XCircle,
@@ -32,6 +33,9 @@ const ResumeBuilder = () => {
     message: string;
   } | null>(null);
 
+  // NEW: controls the full-screen preview overlay after final save
+  const [showFullPreview, setShowFullPreview] = useState(false);
+
   const [resumeData, setResumeData] = useState({
     id: "",
     title: "",
@@ -46,10 +50,8 @@ const ResumeBuilder = () => {
     public: false,
   });
 
-  // Auto-dismiss toast after 3 seconds
   useEffect(() => {
     if (!toast) return;
-
     const timer = setTimeout(() => setToast(null), 3000);
     return () => clearTimeout(timer);
   }, [toast]);
@@ -91,14 +93,13 @@ const ResumeBuilder = () => {
     { id: "skills", name: "Skills", icon: Sparkles },
   ];
 
-   
   useEffect(() => {
     if (resumeId) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       loadExistingResume();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ resumeId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeId]);
 
   const templates = [
     { id: "classic", name: "Classic" },
@@ -183,9 +184,18 @@ const ResumeBuilder = () => {
       }
 
       setToast({ type: "success", message: "Saved successfully" });
-      setActiveSectionIndex((prevIndex) =>
-        Math.min(prevIndex + 1, sections.length - 1),
-      );
+
+      // NEW: if this was the last section (Skills), show full-screen preview
+      // instead of just advancing activeSectionIndex
+      const isLastSection = activeSectionIndex === sections.length - 1;
+
+      if (isLastSection) {
+        setShowFullPreview(true);
+      } else {
+        setActiveSectionIndex((prevIndex) =>
+          Math.min(prevIndex + 1, sections.length - 1),
+        );
+      }
     } catch (error) {
       console.error(error);
       setToast({
@@ -211,60 +221,55 @@ const ResumeBuilder = () => {
           {/* Left Panel - Form*/}
           <div className="relative lg:col-span-5 rounded-lg overflow-hidden">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1">
-              {/* progress bar using active sectionIndex */}
               <hr className="absolute top-0 left-0 right-0 border-2 border-gray-200" />
               <hr
                 className="absolute top-0 left-0 h-1 bg-linear-to-r from-green-500 to-green-600 border-none transition-all duration-2000"
                 style={{ width: `${progress}%` }}
               />
-              {/* Section Navigation */}
               <div className="flex justify-between items-center mb-6 border-b border-gray-300 py-1">
                 <div>
-                  {
-                    <div className="flex items-center gap-3">
-                      <label className="font-medium"></label>
-
+                  <div className="flex items-center gap-3">
+                    <label className="font-medium"></label>
+                    <select
+                      value={resumeData.template}
+                      onChange={(e) =>
+                        setResumeData((prev) => ({
+                          ...prev,
+                          template: e.target.value,
+                        }))
+                      }
+                      className="border rounded-lg px-1 py-1"
+                    >
+                      {templates.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div>
+                      {" "}
                       <select
-                        value={resumeData.template}
+                        value={resumeData.accent_color}
                         onChange={(e) =>
                           setResumeData((prev) => ({
                             ...prev,
-                            template: e.target.value,
+                            accent_color: e.target.value,
                           }))
                         }
                         className="border rounded-lg px-1 py-1"
                       >
-                        {templates.map((item) => (
-                          <option key={item.id} value={item.id}>
+                        {accentColor.map((item) => (
+                          <option
+                            key={item.id}
+                            value={item.id}
+                            style={{ color: item.id }}
+                          >
                             {item.name}
                           </option>
                         ))}
                       </select>
-                      <div>
-                        {" "}
-                        <select
-                          value={resumeData.accent_color}
-                          onChange={(e) =>
-                            setResumeData((prev) => ({
-                              ...prev,
-                              accent_color: e.target.value,
-                            }))
-                          }
-                          className="border rounded-lg px-1 py-1"
-                        >
-                          {accentColor.map((item) => (
-                            <option
-                              key={item.id}
-                              value={item.id}
-                              style={{ color: item.id }}
-                            >
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
                     </div>
-                  }
+                  </div>
                 </div>
                 <div className="flex items-center">
                   {activeSectionIndex !== 0 && (
@@ -294,7 +299,6 @@ const ResumeBuilder = () => {
                 </div>
               </div>
               <div>
-                {/* Form Content */}
                 <div className="space-y-6">
                   {activeSection.id === "personal" && (
                     <PersonalInfoForm
@@ -363,45 +367,99 @@ const ResumeBuilder = () => {
                       onClick={() => handleSave()}
                       className="w-full bg-green-600 rounded-lg "
                     >
-                      Save
+                      {/* NEW: button label changes on the last section */}
+                      {activeSectionIndex === sections.length - 1
+                        ? "Save & Preview"
+                        : "Save"}
                     </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-         {/* Right Panel - Preview */}
-<div className="lg:col-span-7 max-lg:mt-6">
-  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-    <div className="flex items-center justify-between mb-5 pb-5 border-b border-gray-100">
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900">
-          Live Preview
-        </h3>
-        <p className="text-sm text-gray-500 mt-0.5">
-          See how your resume looks in real time
-        </p>
-      </div>
-      <button
-        onClick={() => downloadResume()}
-        className="group flex items-center gap-2.5 px-5 py-3 text-sm font-semibold text-white bg-linear-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 transition-all duration-200"
-      >
-        <DownloadIcon className="size-4 group-hover:translate-y-0.5 transition-transform duration-200" />
-        Download PDF
-      </button>
-    </div>
 
-   <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
-      <ResumePreview
-        data={resumeData}
-        template={resumeData.template}
-        accentColor={resumeData.accent_color}
-      />
-    </div>
-  </div>
-</div>
+          {/* Right Panel - Preview */}
+          <div className="lg:col-span-7 max-lg:mt-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-5 pb-5 border-b border-gray-100">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Live Preview
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    See how your resume looks in real time
+                  </p>
+                </div>
+                <button
+                  onClick={() => downloadResume()}
+                  className="group flex items-center gap-2.5 px-5 py-3 text-sm font-semibold text-white bg-linear-to-br from-indigo-600 to-indigo-700 rounded-xl shadow-md shadow-indigo-200 hover:shadow-lg hover:shadow-indigo-300 hover:from-indigo-500 hover:to-indigo-600 active:scale-95 transition-all duration-200"
+                >
+                  <DownloadIcon className="size-4 group-hover:translate-y-0.5 transition-transform duration-200" />
+                  Download PDF
+                </button>
+              </div>
+
+              <div className="rounded-lg overflow-hidden bg-gray-50 p-4">
+                <ResumePreview
+                  data={resumeData}
+                  template={resumeData.template}
+                  accentColor={resumeData.accent_color}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* NEW: Full-screen preview overlay shown after saving the last section */}
+      {showFullPreview && (
+        <div className="fixed inset-0 z-60 bg-gray-900/95 backdrop-blur-sm overflow-y-auto">
+          <div className="max-w-4xl mx-auto px-4 pt-10 py-8">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  Your Resume is Ready
+                </h2>
+                <p className="text-sm text-gray-300 mt-1">
+                  Review it below, download, or go back to make edits.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Link
+                to="/app"
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-200 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors"
+                >
+                <ArrowLeft className="size-4" />
+                Dashboard
+                </Link>
+                <button
+                  onClick={() => setShowFullPreview(false)}
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-200 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors"
+                >
+                  <Pencil className="size-4" />
+                  Edit
+                </button>
+                <button
+                  onClick={() => downloadResume()}
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-xl hover:bg-indigo-500 active:scale-95 transition-all shadow-lg shadow-indigo-900/40"
+                >
+                  <DownloadIcon className="size-4" />
+                  Download PDF
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-2xl p-6">
+              <ResumePreview
+                data={resumeData}
+                template={resumeData.template}
+                accentColor={resumeData.accent_color}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Toast Notification */}
       {toast && (
