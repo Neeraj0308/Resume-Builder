@@ -56,7 +56,7 @@ const Navbar = () => {
 
   const goToChangePassword = () => {
     setShowDropdown(false);
-    navigate("/create-password");
+    navigate("/change-password");
   };
 
   // Get first letter of name for avatar

@@ -44,7 +44,6 @@ const ChangePassword = () => {
         {
           currentPassword,
           newPassword,
-          confirmPassword
         },
         {
           headers: {
@@ -61,12 +60,11 @@ const ChangePassword = () => {
       setTimeout(() => {
         navigate("/app");
       }, 1200);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setToast({
         type: "error",
-        message:
-          err?.response?.data?.message || "Could not update password",
+        message: err?.response?.data?.message || "Could not update password",
       });
     } finally {
       setLoading(false);
