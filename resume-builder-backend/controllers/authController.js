@@ -8,7 +8,7 @@ import transporter from "../config/mail.js";
 import generateOTP from "../utils/generateOTP.js";
 
 // Register User
-export const register = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -51,10 +51,10 @@ export const register = async (req, res) => {
         to: email,
         subject: "Verify Your Email",
         html: `
-      <h2>Email Verification</h2>
-      <h1>${otp}</h1>
-      <p>This OTP is valid for 5 minutes.</p>
-    `,
+        <h2>Email Verification</h2>
+        <h1>${otp}</h1>
+        <p>This OTP is valid for 5 minutes.</p>
+      `,
       });
 
       return res.status(200).json({

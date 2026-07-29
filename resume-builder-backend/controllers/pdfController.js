@@ -12,39 +12,94 @@ export const importResume = async (req, res) => {
 
     const pdfData = await pdf(buffer);
 
+    const cleanedText = pdfData.text
+      .replace(/\r/g, "")
+      .replace(/\n{2,}/g, "\n")
+      .replace(/[ \t]{2,}/g, " ")
+      .trim();
+
     const model = genAI.getGenerativeModel({
       model: "gemini-3.6-flash",
     });
 
     const prompt = `
-Extract resume information.
+You are an expert ATS resume parser.
+
+Extract ALL information from this resume.
 
 Return ONLY valid JSON.
+Do not explain anything.
+Do not wrap the JSON inside markdown.
 
-Schema:
+Use this exact schema:
 
 {
- title:"",
- personalInfo:{
-   full_name:"",
-   email:"",
-   phone:"",
-   location:"",
-   profession:"",
-   linkedin:"",
-   website:"",
-   summary:""
- },
- professionalSummary:"",
- experience:[],
- education:[],
- projects:[],
- skills:[]
+  "title":"",
+  "personalInfo":{
+    "full_name":"",
+    "email":"",
+    "phone":"",
+    "location":"",
+    "profession":"",
+    "linkedin":"",
+    "github":"",
+    "website":"",
+    "portfolio":"",
+    "summary":""
+  },
+  "professionalSummary":"",
+  "experience":[
+    {
+      "company":"",
+      "position":"",
+      "location":"",
+      "startDate":"",
+      "endDate":"",
+      "currentlyWorking":false,
+      "description":""
+    }
+  ],
+  "education":[
+    {
+      "institution":"",
+      "degree":"",
+      "field":"",
+      "startDate":"",
+      "endDate":"",
+      "cgpa":"",
+      "percentage":""
+    }
+  ],
+  "projects":[
+    {
+      "title":"",
+      "description":"",
+      "technologies":[],
+      "github":"",
+      "live":""
+    }
+  ],
+  "skills":[],
+  "certifications":[],
+  "languages":[],
+  "achievements":[],
+  "interests":[]
 }
+
+Rules:
+
+- If a field is missing, use "" or [].
+- Never invent data.
+- Extract every skill.
+- Extract every project.
+- Extract every education entry.
+- Extract every work experience.
+- Extract all links.
+- Return valid JSON only.
 
 Resume:
 
-${pdfData.text}
+${cleanedText}
 `;
 
     const result = await model.generateContent(prompt);
@@ -52,6 +107,7 @@ ${pdfData.text}
     let text = result.response.text();
 
     text = text
+
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();

@@ -2,7 +2,7 @@ import express from "express";
 import upload from "../config/multer.js";
 
 import {
-  register,
+  signup,
   verifyEmail,
   resendOTP,
   login,
@@ -20,7 +20,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/signup", signup);
 router.post("/verify-email", verifyEmail);
 router.post("/login", login);
 
