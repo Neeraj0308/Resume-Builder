@@ -75,7 +75,6 @@ const ExperienceForm = ({
   const monthInputRef = useRef<HTMLInputElement>(null);
   const monthInputReff = useRef<HTMLInputElement>(null);
 
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -102,118 +101,160 @@ const ExperienceForm = ({
         </div>
       ) : (
         <div className="space-y-4">
-          {data.map((experience: Experience, index: number) => (
-            <div
-              key={index}
-              className="border rounded p-4 border-gray-200 space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <h4 className="text-lg font-semibold text-gray-900">
-                  Experience {index + 1}
-                </h4>
-                <button
-                  onClick={() => removeExperience(index)}
-                  className="text-red-500 hover:text-red-700 transition-colors"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
+          {data.map((experience: Experience, index: number) => {
+            const isIncomplete =
+              !experience.company?.trim() ||
+              !experience.position?.trim() ||
+              !experience.start_date?.trim() ||
+              !experience.description?.trim();
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  value={experience.company}
-                  onChange={(e) =>
-                    updateExperience(index, "company", e.target.value)
-                  }
-                  className="px-3 py-2 text-sm rounded-lg"
-                  placeholder="Company"
-                />
-                <input
-                  type="text"
-                  value={experience.position}
-                  onChange={(e) =>
-                    updateExperience(index, "position", e.target.value)
-                  }
-                  className="px-3 py-2 text-sm rounded-lg"
-                  placeholder="Position"
-                />
-                <input
-                  ref={monthInputRef}
-                  type="month"
-                  max={currentMonth}
-                  value={experience.start_date}
-                  onChange={(e) =>
-                    updateExperience(index, "start_date", e.target.value)
-                  }
-                   onFocus={() => monthInputRef.current?.showPicker()}
-                  onPaste={(e) => e.preventDefault()}
-                  className="px-3 py-2 text-sm rounded-lg"
-                  placeholder="Start Date"
-                />
-                {!experience.is_current && (
-                  <input
-                    ref={monthInputReff}
-                    type="month"
-                    min="2000-01"
-                    max={currentMonth}
-                    value={experience.end_date}
-                     onFocus={() => monthInputReff.current?.showPicker()}
-                    onChange={(e) =>
-                      updateExperience(index, "end_date", e.target.value)
-                    }
-                    className="px-3 py-2 text-sm rounded-lg disabled:bg-gray-100"
-                    onKeyDown={(e) => e.preventDefault()}
-                    onPaste={(e) => e.preventDefault()}
-                    placeholder="End Date"
-                  />
-                )}
-              </div>
-
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={experience.is_current || false}
-                  onChange={(e) =>
-                    updateExperience(
-                      index,
-                      "is_current",
-                      e.target.checked ? true : false,
-                    )
-                  }
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">
-                  I currently work here
-                </span>
-              </label>
-
-              <div className="space-y-2">
+            return (
+              <div
+                key={index}
+                className={`border rounded p-4 space-y-4 transition-colors ${
+                  isIncomplete
+                    ? "border-amber-300 bg-amber-50/50"
+                    : "border-gray-200"
+                }`}
+              >
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
-                    Job Description
-                  </label>
+                  <h4 className="text-lg font-semibold text-gray-900">
+                    Experience {index + 1}
+                  </h4>
                   <button
-                    onClick={() => handleAIEnhance(index)}
-                    disabled={loading}
-                    className="flex items-center gap-2 px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 disabled:opacity-50"
+                    onClick={() => removeExperience(index)}
+                    className="text-red-500 hover:text-red-700 transition-colors"
                   >
-                    <Sparkles className="size-4" />
-                    {loading ? "Enhancing..." : "AI Enhance"}
+                    <Trash2 className="size-4" />
                   </button>
                 </div>
-                <textarea
-                  className="w-full text-sm px-3 py-2 rounded-lg resize-none"
-                  placeholder="Describe Your key responsibilities and achievements..."
-                  value={experience.description || ""}
-                  onChange={(e) =>
-                    updateExperience(index, "description", e.target.value)
-                  }
-                  rows={4}
-                />
+
+                {isIncomplete && (
+                  <p className="text-xs text-amber-600 bg-amber-100 rounded-lg px-3 py-1.5">
+                    Fill in company, position, start date, and description, or
+                    remove this section using the delete icon above.
+                  </p>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      Company <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={experience.company}
+                      onChange={(e) =>
+                        updateExperience(index, "company", e.target.value)
+                      }
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                      placeholder="Company"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      Position <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={experience.position}
+                      onChange={(e) =>
+                        updateExperience(index, "position", e.target.value)
+                      }
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                      placeholder="Position"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-gray-600">
+                      Start Date <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={monthInputRef}
+                      type="month"
+                      max={currentMonth}
+                      value={experience.start_date}
+                      onChange={(e) =>
+                        updateExperience(index, "start_date", e.target.value)
+                      }
+                      onFocus={() => monthInputRef.current?.showPicker()}
+                      onPaste={(e) => e.preventDefault()}
+                      className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                      placeholder="Start Date"
+                    />
+                  </div>
+
+                  {!experience.is_current && (
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium text-gray-600">
+                        End Date
+                      </label>
+                      <input
+                        ref={monthInputReff}
+                        type="month"
+                        min="2000-01"
+                        max={currentMonth}
+                        value={experience.end_date}
+                        onFocus={() => monthInputReff.current?.showPicker()}
+                        onChange={(e) =>
+                          updateExperience(index, "end_date", e.target.value)
+                        }
+                        className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 disabled:bg-gray-100 focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                        onKeyDown={(e) => e.preventDefault()}
+                        onPaste={(e) => e.preventDefault()}
+                        placeholder="End Date"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={experience.is_current || false}
+                    onChange={(e) =>
+                      updateExperience(
+                        index,
+                        "is_current",
+                        e.target.checked ? true : false,
+                      )
+                    }
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">
+                    I currently work here
+                  </span>
+                </label>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium text-gray-700">
+                      Job Description <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      onClick={() => handleAIEnhance(index)}
+                      disabled={loading}
+                      className="flex items-center gap-2 px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded hover:bg-purple-200 disabled:opacity-50"
+                    >
+                      <Sparkles className="size-4" />
+                      {loading ? "Enhancing..." : "AI Enhance"}
+                    </button>
+                  </div>
+                  <textarea
+                    className="w-full text-sm px-3 py-2 rounded-lg border border-gray-300 resize-none focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    placeholder="Describe Your key responsibilities and achievements..."
+                    value={experience.description || ""}
+                    onChange={(e) =>
+                      updateExperience(index, "description", e.target.value)
+                    }
+                    rows={4}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

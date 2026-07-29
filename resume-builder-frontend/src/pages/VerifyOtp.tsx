@@ -104,7 +104,7 @@ const VerifyOtp = () => {
           <span className="font-medium text-gray-300">{email}</span>
         </p>
 
-        <form onSubmit={handleVerify} className="space-y-4">
+        <form noValidate onSubmit={handleVerify} className="space-y-4">
           <input
             type="text"
             inputMode="numeric"

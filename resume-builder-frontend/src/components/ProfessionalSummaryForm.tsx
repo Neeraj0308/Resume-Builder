@@ -7,11 +7,6 @@ const ProfessionalSummaryForm = ({ data, onChange }: any) => {
   const [loading, setLoading] = useState(false);
 
   const handleAIEnhance = async () => {
-    // console.log("===== BUTTON CLICKED =====");
-    // console.log("Data:", data);
-    // console.log("Professional Summary:", data?.professionalSummary);
-
-    // alert(JSON.stringify(data));
 
     try {
       setLoading(true);
@@ -55,6 +50,7 @@ const ProfessionalSummaryForm = ({ data, onChange }: any) => {
           placeholder="Enter your professional summary..."
           value={data}
           onChange={(e) => onChange(e.target.value)}
+          required={true}
         />
         <p className="text-sm text-gray-500 max-w-4/5 x-auto text-center">
           Tip: Keep it concise and highlight your key strengths.

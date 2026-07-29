@@ -69,7 +69,7 @@ const ResetPassword = () => {
           Enter a new password for <span className="font-medium text-gray-300">{email}</span>
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/50" />
             <input
