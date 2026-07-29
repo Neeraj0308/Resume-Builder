@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Lock, CheckCircle2, XCircle } from "lucide-react";
+import { Lock, CheckCircle2, XCircle, Eye, EyeOff } from "lucide-react";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -15,6 +15,10 @@ const ChangePassword = () => {
     type: "success" | "error";
     message: string;
   } | null>(null);
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,37 +99,73 @@ const ChangePassword = () => {
         <div className="flex items-center w-full mt-8 bg-white/5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-indigo-500 h-13 rounded-xl overflow-hidden pl-4 gap-3 transition-all">
           <Lock className="size-4 text-white/50 shrink-0" />
           <input
-            type="password"
+            type={showCurrentPassword ? "text" : "password"}
             placeholder="Current password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
             className="w-full h-full bg-transparent text-white placeholder-white/40 border-none outline-none text-sm"
             required
           />
+          <button
+            type="button"
+            onClick={() => setShowCurrentPassword((prev) => !prev)}
+            className="pr-4 text-white/40 hover:text-white/70 transition-colors"
+            tabIndex={-1}
+          >
+            {showCurrentPassword ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
+          </button>
         </div>
 
         <div className="flex items-center w-full mt-3 bg-white/5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-indigo-500 h-13 rounded-xl overflow-hidden pl-4 gap-3 transition-all">
           <Lock className="size-4 text-white/50 shrink-0" />
           <input
-            type="password"
+            type={showNewPassword ? "text" : "password"}
             placeholder="New password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             className="w-full h-full bg-transparent text-white placeholder-white/40 border-none outline-none text-sm"
             required
           />
+          <button
+            type="button"
+            onClick={() => setShowNewPassword((prev) => !prev)}
+            className="pr-4 text-white/40 hover:text-white/70 transition-colors"
+            tabIndex={-1}
+          >
+            {showNewPassword ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
+          </button>
         </div>
 
         <div className="flex items-center w-full mt-3 bg-white/5 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-indigo-500 h-13 rounded-xl overflow-hidden pl-4 gap-3 transition-all">
           <Lock className="size-4 text-white/50 shrink-0" />
           <input
-            type="password"
+            type={showConfirmPassword ? "text" : "password"}
             placeholder="Re-enter new password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             className="w-full h-full bg-transparent text-white placeholder-white/40 border-none outline-none text-sm"
             required
           />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((prev) => !prev)}
+            className="pr-4 text-white/40 hover:text-white/70 transition-colors"
+            tabIndex={-1}
+          >
+            {showConfirmPassword ? (
+              <EyeOff className="size-4" />
+            ) : (
+              <Eye className="size-4" />
+            )}
+          </button>
         </div>
 
         {error && (

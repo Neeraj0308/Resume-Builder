@@ -154,6 +154,68 @@ const ResumeBuilder = () => {
       return;
     }
 
+     const isLastSection = activeSectionIndex === sections.length - 1;
+  
+   if (isLastSection) {  
+  // NEW: Professional Summary validation
+  if (!resumeData.professional_summary?.trim()) {
+    setToast({
+      type: "error",
+      message: "Please enter your professional summary",
+    });
+    return;
+  }
+
+    // NEW: Education validation — require at least one complete entry
+  const education = resumeData.education as Array<{
+    institution?: string;
+    degree?: string;
+    graduation_StartDate?: string;
+  }>;
+
+   if (education.length === 0) {
+    setToast({
+      type: "error",
+      message: "Please add your education details",
+    });
+    return;
+  }
+   
+
+
+
+   const hasIncompleteEducation = education.some(
+    (edu) =>
+      !edu.institution?.trim() ||
+      !edu.degree?.trim() ||
+      !edu.graduation_StartDate?.trim(),
+  );
+
+  if (hasIncompleteEducation) {
+    setToast({
+      type: "error",
+      message:
+        "Please enter institution, degree, and start date in Education",
+    });
+    return;
+  }
+
+
+
+  // NEW: Skills validation
+  const skills = resumeData.skills as string[];
+
+  if (skills.length === 0) {
+    setToast({
+      type: "error",
+      message: "Please add at least one skill",
+    });
+    return;
+  }
+
+   }
+
+
     try {
       const payload = {
         title: resumeData.title || "Untitled Resume",
@@ -413,29 +475,29 @@ const ResumeBuilder = () => {
 
       {/* NEW: Full-screen preview overlay shown after saving the last section */}
       {showFullPreview && (
-        <div className="fixed inset-0 z-60 bg-gray-900/95 backdrop-blur-sm overflow-y-auto">
+        <div className="fixed inset-0 z-60 bg-white-900/95 backdrop-blur-sm overflow-y-auto">
           <div className="max-w-4xl mx-auto px-4 pt-10 py-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-white">
+                <h2 className="text-2xl font-bold ">
                   Your Resume is Ready
                 </h2>
-                <p className="text-sm text-gray-300 mt-1">
+                <p className="text-sm text-black-200 mt-1">
                   Review it below, download, or go back to make edits.
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center text-black gap-3">
                 <Link
                 to="/app"
-                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-200 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors"
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-black-200 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors"
                 >
-                <ArrowLeft className="size-4" />
+                <ArrowLeft className="size-4 text-balck" />
                 Dashboard
                 </Link>
                 <button
                   onClick={() => setShowFullPreview(false)}
-                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-200 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors"
+                  className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium tex-black-200 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-colors"
                 >
                   <Pencil className="size-4" />
                   Edit

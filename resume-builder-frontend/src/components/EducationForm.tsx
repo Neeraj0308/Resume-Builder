@@ -43,8 +43,9 @@ const EducationForm = ({
     updated[index] = { ...updated[index], [field]: value };
     onChange(updated);
   };
-   const monthInputRef = useRef<HTMLInputElement>(null);
-    const monthInputReff = useRef<HTMLInputElement>(null);
+
+  const monthInputRef = useRef<HTMLInputElement>(null);
+  const monthInputReff = useRef<HTMLInputElement>(null);
 
   return (
     <div className="space-y-6">
@@ -90,69 +91,111 @@ const EducationForm = ({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  value={education.institution || ""}
-                  onChange={(e) =>
-                    updateEducation(index, "institution", e.target.value)
-                  }
-                  className="px-3 py-2 text-sm "
-                  placeholder="Institution"
-                />
-                <input
-                  type="text"
-                  value={education.degree || ""}
-                  onChange={(e) =>
-                    updateEducation(index, "degree", e.target.value)
-                  }
-                  className="px-3 py-2 text-sm "
-                  placeholder="Degree"
-                />
-                <input
-                  type="text"
-                  value={education.field || ""}
-                  onChange={(e) =>
-                    updateEducation(index, "field", e.target.value)
-                  }
-                  className="px-3 py-2 text-sm "
-                  placeholder="course"
-                />
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">
+                    Institution <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={education.institution || ""}
+                    onChange={(e) =>
+                      updateEducation(index, "institution", e.target.value)
+                    }
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    placeholder="Institution"
+                    required
+                  />
+                </div>
 
-                
-                <input
-                  ref = {monthInputRef}
-                  type="month"
-                  value={education.graduation_StartDate || ""}
-                  onChange={(e) =>
-                    updateEducation(index, "graduation_StartDate", e.target.value)
-                  }
-                  onFocus={() => monthInputRef.current?.showPicker()}
-                  className="px-3 py-2 text-sm"
-                  placeholder="Graduation Date"
-                />
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">
+                    Degree <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={education.degree || ""}
+                    onChange={(e) =>
+                      updateEducation(index, "degree", e.target.value)
+                    }
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    placeholder="Degree"
+                    required
+                  />
+                </div>
 
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">
+                    Field / Course
+                  </label>
+                  <input
+                    type="text"
+                    value={education.field || ""}
+                    onChange={(e) =>
+                      updateEducation(index, "field", e.target.value)
+                    }
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    placeholder="Course"
+                  />
+                </div>
 
-                 
-                <input
-                  ref = {monthInputReff}
-                  type="month"
-                  value={education.graduation_EndDate || ""}
-                  onChange={(e) =>
-                    updateEducation(index, "graduation_EndDate", e.target.value)
-                  }
-                  onFocus={() => monthInputReff.current?.showPicker()}
-                  className="px-3 py-2 text-sm"
-                  placeholder="Graduation Date"
-                />
+                <div />
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">
+                    Start Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={monthInputRef}
+                    type="month"
+                    value={education.graduation_StartDate || ""}
+                    onChange={(e) =>
+                      updateEducation(
+                        index,
+                        "graduation_StartDate",
+                        e.target.value,
+                      )
+                    }
+                    onFocus={() => monthInputRef.current?.showPicker()}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-gray-600">
+                    End Date
+                  </label>
+                  <input
+                    ref={monthInputReff}
+                    type="month"
+                    value={education.graduation_EndDate || ""}
+                    onChange={(e) =>
+                      updateEducation(
+                        index,
+                        "graduation_EndDate",
+                        e.target.value,
+                      )
+                    }
+                    onFocus={() => monthInputReff.current?.showPicker()}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  />
+                </div>
               </div>
 
-              <input
-                type="text"
-                value={education.gpa || ""}
-                onChange={(e) => updateEducation(index, "gpa", e.target.value)}
-                className="px-3 py-2 text-sm"
-                placeholder="GPA (optional)"
-              />
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-gray-600">
+                  GPA (optional)
+                </label>
+                <input
+                  type="text"
+                  value={education.gpa || ""}
+                  onChange={(e) =>
+                    updateEducation(index, "gpa", e.target.value)
+                  }
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                  placeholder="GPA (optional)"
+                />
+              </div>
             </div>
           ))}
         </div>

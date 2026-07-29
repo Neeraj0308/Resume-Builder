@@ -46,6 +46,7 @@ const Signup = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-950 px-4">
       <form
+        noValidate
         onSubmit={handleSubmit}
         className="w-full sm:w-96 text-center bg-white/3 backdrop-blur-xl border border-white/10 rounded-3xl px-8 py-10 shadow-2xl"
       >
