@@ -8,7 +8,7 @@ import transporter from "../config/mail.js";
 import generateOTP from "../utils/generateOTP.js";
 
 // Register User
-export const register = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -51,10 +51,10 @@ export const register = async (req, res) => {
         to: email,
         subject: "Verify Your Email",
         html: `
-      <h2>Email Verification</h2>
-      <h1>${otp}</h1>
-      <p>This OTP is valid for 5 minutes.</p>
-    `,
+        <h2>Email Verification</h2>
+        <h1>${otp}</h1>
+        <p>This OTP is valid for 5 minutes.</p>
+      `,
       });
 
       return res.status(200).json({
@@ -154,6 +154,146 @@ export const verifyEmail = async (req, res) => {
     );
   } catch (error) {
     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const resendOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    // Check user exists
+    const user = await User.findOne({ email });
+    console.log(user);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Already verified
+    if (user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already verified",
+      });
+    }
+
+    // Delete old OTP
+    await OTP.deleteMany({ email });
+
+    // Generate new OTP
+    const otp = generateOTP();
+
+    // Save new OTP
+    await OTP.create({
+      email,
+      otp,
+    });
+
+    // Send Email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your New OTP",
+      html: `
+        <h2>Email Verification</h2>
+        <p>Your new verification code is:</p>
+        <h1>${otp}</h1>
+        <p>This OTP expires in 10 minutes.</p>
+      `,
+    });
+
+    return res.status(200).json({
+      success: false,
+      message: "New OTP sent successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const resendForgotPasswordOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Check email
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    // Check user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // User must already be verified
+    if (!user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Please verify your email first",
+      });
+    }
+
+    // Delete previous OTP
+    await OTP.deleteMany({ email });
+
+    // Generate new OTP
+    const otp = generateOTP();
+
+    // Save OTP
+    await OTP.create({
+      email,
+      otp,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    });
+
+    // Send Email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      html: `
+        <div style="font-family:Arial">
+          <h2>Password Reset</h2>
+
+          <p>Your new OTP is:</p>
+
+          <h1>${otp}</h1>
+
+          <p>This OTP is valid for 5 minutes.</p>
+        </div>
+      `,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

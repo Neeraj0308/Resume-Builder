@@ -2,10 +2,12 @@ import express from "express";
 import upload from "../config/multer.js";
 
 import {
-  register,
+  signup,
   verifyEmail,
+  resendOTP,
   login,
   forgotPassword,
+  resendForgotPasswordOTP,
   verifyOTP,
   resetPassword,
   profile,
@@ -18,12 +20,13 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register", register);
+router.post("/signup", signup);
 router.post("/verify-email", verifyEmail);
 router.post("/login", login);
 
 router.post("/forgot-password", forgotPassword);
-router.post("/verify-otp", verifyOTP);
+router.post("/forgot-password/resend-otp", resendForgotPasswordOTP);
+router.post("/resend-otp", resendOTP);
 router.post("/reset-password", resetPassword);
 router.put("/change-password", authMiddleware, changePassword);
 

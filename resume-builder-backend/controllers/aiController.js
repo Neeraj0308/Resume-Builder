@@ -31,6 +31,7 @@ You are a professional resume writer.
 Improve the following ${section}.
 
 Rules:
+- Don't give in point only in paragraph
 - Keep it ATS friendly.
 - Use professional English.
 - Don't invent fake experience.
