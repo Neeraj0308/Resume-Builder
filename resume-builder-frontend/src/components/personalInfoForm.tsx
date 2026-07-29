@@ -33,7 +33,6 @@ const personalInfoForm = ({ data, onChange }: PersonalInfoFormProps) => {
     value: string | File,
   ) => {
     onChange({ ...data, [field]: value });
-    
   };
 
   const removeImage = () => {
@@ -103,17 +102,15 @@ const personalInfoForm = ({ data, onChange }: PersonalInfoFormProps) => {
             onChange={async (e) => {
               if (!e.target.files?.[0]) return;
 
+              const file = e.target.files[0];
 
-                const file = e.target.files[0];
+              const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 1 MB
 
-                const MAX_IMAGE_SIZE = 2 *1024 ; // 1 MB
-
-                if (file.size > MAX_IMAGE_SIZE) {
+              if (file.size > MAX_IMAGE_SIZE) {
                 alert("Image size should not exceed 1 MB.");
                 e.target.value = "";
                 return;
-                }
-
+              }
 
               const formData = new FormData();
               formData.append("image", file);
@@ -162,7 +159,7 @@ const personalInfoForm = ({ data, onChange }: PersonalInfoFormProps) => {
               onChange={(e) => handleChange(field.key, e.target.value)}
               className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm"
               placeholder={`Enter your ${field.label.toLowerCase()}`}
-               maxLength={field.key === "phone" ? 10 : undefined}
+              maxLength={field.key === "phone" ? 10 : undefined}
               required={field.required}
             />
           </div>

@@ -29,35 +29,42 @@ const resumeSchema = new mongoose.Schema(
       },
     },
 
+    professionalSummary: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     education: [
       {
-        college: String,
+        institution: String,
         degree: String,
-        location: String,
-        startYear: String,
-        endYear: String,
+        field: String,
+        graduation_StartDate: String,
+        graduation_EndDate: String,
+        gpa: String,
       },
     ],
 
     experience: [
       {
         company: String,
-        role: String,
-        location: String,
-        startDate: String,
-        endDate: String,
+        position: String,
+        start_date: String,
+        end_date: String,
         description: String,
+        is_current: String,
       },
     ],
 
     skills: [String],
 
-    projects: [
+    Project: [
       {
-        title: String,
+        name: String,
+        type: String,
         description: String,
-        github: String,
-        live: String,
+        link: String,
       },
     ],
   },
