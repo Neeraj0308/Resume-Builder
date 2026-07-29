@@ -104,17 +104,10 @@ const personalInfoForm = ({ data, onChange }: PersonalInfoFormProps) => {
 
               const file = e.target.files[0];
 
-<<<<<<< HEAD
-              const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 1 MB
-
-              if (file.size > MAX_IMAGE_SIZE) {
-                alert("Image size should not exceed 1 MB.");
-=======
               const MAX_IMAGE_SIZE = 2 * 1024*1024; // 2 MB
 
               if (file.size > MAX_IMAGE_SIZE) {
                 alert("Image size should not exceed 2 MB.");
->>>>>>> 3d2cdb134da1f77f48caee2d689e6742c7f4575f
                 e.target.value = "";
                 return;
               }

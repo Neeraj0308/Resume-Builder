@@ -2,10 +2,10 @@ import { GraduationCap, Plus, Trash2 } from "lucide-react";
 import { useRef } from "react";
 
 type Education = {
-  institution?: string;
-  degree?: string;
+  institution: string;
+  degree: string;
   field?: string;
-  graduation_StartDate?: string;
+  graduation_StartDate: string;
   graduation_EndDate?: string;
   gpa?: string;
 };

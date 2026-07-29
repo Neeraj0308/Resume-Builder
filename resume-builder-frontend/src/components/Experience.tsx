@@ -3,9 +3,9 @@ import { useRef, useState } from "react";
 import { enhanceText } from "../services/aiService";
 
 type Experience = {
-  company?: string;
-  position?: string;
-  start_date?: string;
+  company: string;
+  position: string;
+  start_date: string;
   end_date?: string;
   description?: string;
   is_current?: boolean;
