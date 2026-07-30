@@ -130,6 +130,27 @@ const progress =
 
 // NEW: checks if the currently active section has incomplete data
 const validateCurrentSection = (): string | null => {
+
+   if (activeSection.id === "personal") {
+    const personalInfo = resumeData.personal_info as {
+      full_name?: string;
+      firstName?: string;
+      name?: string;
+      email?: string;
+    };
+
+    const fullName =
+      personalInfo.full_name?.trim() ||
+      personalInfo.firstName?.trim() ||
+      personalInfo.name?.trim();
+    const email = personalInfo.email?.trim();
+
+    if (!fullName || !email) {
+      return "Please enter your full name and email before continuing";
+    }
+  }
+
+  
   if (activeSection.id === "summary") {
     if (!resumeData.professional_summary?.trim()) {
       return "Please enter your professional summary before continuing";
@@ -443,8 +464,8 @@ const downloadResume = () => {
                       }
                       setActiveSectionIndex((prevIndex) =>
                       Math.min(prevIndex + 1, sections.length - 1),
-                      );
-                      }}
+                      ); 
+                      } }
                       className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all  ${activeSectionIndex === sections.length - 1 ? "opacity-50" : ""}`}
                       disabled={activeSectionIndex === sections.length - 1}
                       >
