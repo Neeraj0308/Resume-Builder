@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Lock } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -12,6 +12,9 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [showNewpassword, setShowNewpassword] = useState(false);
+  const [showReenterpassword, setShowReenterpassword] = useState(false);
 
   useEffect(() => {
     if (!email) {
@@ -45,14 +48,14 @@ const ResetPassword = () => {
         newPassword: password,
       });
 
-      // Successful reset — send them to log in with the new password
       navigate("/login", {
         state: { message: "Password updated. Please log in." },
       });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(
-        err?.response?.data?.message || "Could not reset password. Try again.",
+        err?.response?.data?.message ||
+          "Could not reset password. Try again.",
       );
     } finally {
       setLoading(false);
@@ -66,30 +69,55 @@ const ResetPassword = () => {
           Reset Password
         </h2>
         <p className="text-sm text-gray-400 mb-6">
-          Enter a new password for <span className="font-medium text-gray-300">{email}</span>
+          Enter a new password for{" "}
+          <span className="font-medium text-gray-300">{email}</span>
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/50" />
             <input
-              type="password"
+              type={showNewpassword ? "text" : "password"}
               placeholder="New password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-3 py-2.5 text-sm bg-white/5 text-white placeholder-white/40 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-10 pr-10 py-2.5 text-sm bg-white/5 text-white placeholder-white/40 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
+            <button
+              type="button"
+              onClick={() => setShowNewpassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+              tabIndex={-1}
+            >
+              {showNewpassword ? (
+                <EyeOff className="size-4" />
+              ) : (
+                <Eye className="size-4" />
+              )}
+            </button>
           </div>
 
           <div className="relative">
             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-white/50" />
             <input
-              type="password"
+              type={showReenterpassword ? "text" : "password"}
               placeholder="Re-enter password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full pl-10 pr-3 py-2.5 text-sm bg-white/5 text-white placeholder-white/40 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-10 pr-10 py-2.5 text-sm bg-white/5 text-white placeholder-white/40 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
+            <button
+              type="button"
+              onClick={() => setShowReenterpassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 transition-colors"
+              tabIndex={-1}
+            >
+              {showReenterpassword ? (
+                <EyeOff className="size-4" />
+              ) : (
+                <Eye className="size-4" />
+              )}
+            </button>
           </div>
 
           {error && <p className="text-sm text-red-300">{error}</p>}
