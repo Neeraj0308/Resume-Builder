@@ -116,9 +116,9 @@ export const signup = async (req, res) => {
 export const verifyEmail = async (req, res) => {
   try {
     const { email, otp } = req.body;
-
+     console.log(otp+email)
     const otpData = await OTP.findOne({ email }).sort({ createdAt: -1 });
-
+ console.log(otpData)
     if (!otpData) {
       return res.status(404).json({
         success: false,
@@ -163,6 +163,7 @@ export const verifyEmail = async (req, res) => {
 export const resendOTP = async (req, res) => {
   try {
     const { email } = req.body;
+   
 
     if (!email) {
       return res.status(400).json({
@@ -196,12 +197,15 @@ export const resendOTP = async (req, res) => {
     // Generate new OTP
     const otp = generateOTP();
 
+
     // Save new OTP
     await OTP.create({
       email,
       otp,
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
-
+ 
+     console.log("KKKkk")
     // Send Email
     await transporter.sendMail({
       from: process.env.EMAIL_USER,

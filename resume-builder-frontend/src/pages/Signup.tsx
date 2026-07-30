@@ -11,6 +11,7 @@ const Signup = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+ 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,18 +24,23 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/signup", {
-        name: name.trim(),
-        email: email.trim(),
-        password,
-      });
+       await axios.post("http://localhost:5000/api/auth/signup", {
+         name: name.trim(),
+         email: email.trim(),
+          password,
+         });
+    
 
-      if (res.data?.token) {
-        localStorage.setItem("token", res.data.token);
-        navigate("/app");
-      } else {
-        navigate("/login");
-      }
+        navigate("/verifyEmail", {
+        state: { email },
+        });
+
+      // if (res.data?.token) {
+      //   localStorage.setItem("token", res.data.token);
+      //   navigate("/app");
+      // } else {
+      //   navigate("/login");
+      // }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err?.response?.data?.message || "Signup failed. Try again.");

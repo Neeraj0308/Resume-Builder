@@ -122,17 +122,103 @@ const ResumeBuilder = () => {
     { id: "#166534", name: "Forest Green" },
   ];
 
-  const activeSection = sections[activeSectionIndex];
-  const progress =
-    sections.length > 1
-      ? (activeSectionIndex * 100) / (sections.length - 1)
-      : 0;
+ const activeSection = sections[activeSectionIndex];
+const progress =
+  sections.length > 1
+    ? (activeSectionIndex * 100) / (sections.length - 1)
+    : 0;
 
-  const downloadResume = () => {
-    window.print();
-  };
+// NEW: checks if the currently active section has incomplete data
+const validateCurrentSection = (): string | null => {
+  if (activeSection.id === "summary") {
+    if (!resumeData.professional_summary?.trim()) {
+      return "Please enter your professional summary before continuing";
+    }
+  }
+
+  if (activeSection.id === "education") {
+    const education = resumeData.education as Array<{
+      institution?: string;
+      degree?: string;
+      graduation_StartDate?: string;
+    }>;
+
+    if (education.length === 0) {
+      return "Please add your education details before continuing";
+    }
+
+    const hasIncompleteEducation = education.some(
+      (edu) =>
+        !edu.institution?.trim() ||
+        !edu.degree?.trim() ||
+        !edu.graduation_StartDate?.trim(),
+    );
+
+    if (hasIncompleteEducation) {
+      return "Please enter institution, degree, and start date in Education";
+    }
+  }
+
+   // NEW: Projects - validation
+  if (activeSection.id === "projects") {
+    const projects = resumeData.project as Array<{
+      name?: string;
+      description?: string;
+    }>;
+
+    const hasIncompleteProject = projects.some(
+      (proj) => !proj.name?.trim() || !proj.description?.trim(),
+    );
+
+    if (hasIncompleteProject) {
+      return "Please complete or remove any incomplete project before continuing";
+    }
+  }
+
+  // New : Experience - Validation
+  if (activeSection.id === "experience") {
+    const experience = resumeData.experience as Array<{
+      company?: string;
+      position?: string;
+      description?: string;
+    }>;
+
+    const hasIncompleteExperience = experience.some(
+      (exp) =>
+        !exp.company?.trim() ||
+        !exp.position?.trim() ||
+        !exp.description?.trim(),
+    );
+
+    if (hasIncompleteExperience) {
+      return "Please complete or remove any incomplete experience before continuing";
+    }
+  }
+
+  if (activeSection.id === "skills") {
+    const skills = resumeData.skills as string[];
+
+    if (skills.length === 0) {
+      return "Please add at least one skill before continuing";
+    }
+  }
+
+  return null;
+};
+
+const downloadResume = () => {
+  window.print();
+};
 
   const handleSave = async () => {
+
+    // NEW: block save if the current section has incomplete data
+  const sectionError = validateCurrentSection();
+  if (sectionError) {
+    setToast({ type: "error", message: sectionError });
+    return;
+  }
+
     const personalInfo = resumeData.personal_info as {
       full_name?: string;
       firstName?: string;
@@ -243,6 +329,7 @@ const ResumeBuilder = () => {
             id: data.resume!._id || prev.id,
           }));
         }
+        
       }
 
       setToast({ type: "success", message: "Saved successfully" });
@@ -347,17 +434,22 @@ const ResumeBuilder = () => {
                       <ChevronLeft className="size-4" /> Previous
                     </button>
                   )}
-                  <button
-                    onClick={() =>
+                      <button
+                      onClick={() => {
+                      const error = validateCurrentSection();
+                      if (error) {
+                      setToast({ type: "error", message: error });
+                      return;
+                      }
                       setActiveSectionIndex((prevIndex) =>
-                        Math.min(prevIndex + 1, sections.length - 1),
-                      )
-                    }
-                    className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all  ${activeSectionIndex === sections.length - 1 ? "opacity-50" : ""}`}
-                    disabled={activeSectionIndex === sections.length - 1}
-                  >
-                    Next <ChevronRight className="size-4" />
-                  </button>
+                      Math.min(prevIndex + 1, sections.length - 1),
+                      );
+                      }}
+                      className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all  ${activeSectionIndex === sections.length - 1 ? "opacity-50" : ""}`}
+                      disabled={activeSectionIndex === sections.length - 1}
+                      >
+                      Next <ChevronRight className="size-4" />
+                      </button>
                 </div>
               </div>
               <div>

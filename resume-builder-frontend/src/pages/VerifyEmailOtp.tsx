@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CheckCircle2, XCircle } from "lucide-react";
 
-const VerifyOtp = () => {
+const VerifyEmailOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const email = (location.state as { email?: string })?.email;
@@ -20,7 +20,7 @@ const VerifyOtp = () => {
   // Redirect back if someone lands here directly without an email
   useEffect(() => {
     if (!email) {
-      navigate("/forgot-password", { replace: true });
+      navigate("/signup", { replace: true });
     }
   }, [email, navigate]);
 
@@ -47,17 +47,20 @@ const VerifyOtp = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/otp/verify-otp", {
+     const res =   await axios.post("http://localhost:5000/api/auth/verify-email", {
         email,
         otp: otp.trim(),
       });
-
+ 
       setToast({ type: "success", message: "OTP verified" });
 
-      // Small delay so the user sees the success toast before navigating
-      setTimeout(() => {
-        navigate("/reset-password", { state: { email } });
-      }, 800);
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+        navigate("/app");
+      } else {
+        navigate("/login");
+      }
+    
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setToast({
@@ -75,7 +78,7 @@ const VerifyOtp = () => {
     setResending(true);
     try {
       await axios.post(
-        "http://localhost:5000/api/auth/forgot-password/resend-otp",
+        "http://localhost:5000/api/auth/resend-otp",
         {
           email,
         },
@@ -97,7 +100,7 @@ const VerifyOtp = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="w-full max-w-md bg-white/3 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-8">
         <h2 className="text-2xl font-semibold text-white mb-1 tracking-tight">
-          Verify OTP
+          Verify Email
         </h2>
         <p className="text-sm text-gray-400 mb-6">
           Enter the OTP sent to{" "}
@@ -161,4 +164,4 @@ const VerifyOtp = () => {
   );
 };
 
-export default VerifyOtp;
+export default VerifyEmailOtp;

@@ -54,7 +54,7 @@ export const sendOTP = async (req, res) => {
 export const verifyOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
-
+ console.log("KUnallll")
     const otpData = await OTP.findOne({ email }).sort({ createdAt: -1 });
 
     if (!otpData) {
