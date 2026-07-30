@@ -10,11 +10,11 @@ const NotFound = () => {
           <SearchX className="size-6 text-white" />
         </div>
 
-        <h1 className="text-white text-7xl mt-6 font-bold tracking-tight bg-linear-to-br from-white to-white/50 bg-clip-text">
+        <h1 className="text-white text-7xl mt-6 font-bold  bg-linear-to-br from-white to-white/50 bg-clip-text">
           404
         </h1>
 
-        <h2 className="text-white text-xl mt-2 font-semibold tracking-tight">
+        <h2 className="text-white text-xl mt-2 font-semibold ">
           Page not found
         </h2>
 

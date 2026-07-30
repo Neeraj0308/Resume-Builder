@@ -88,7 +88,7 @@ const ChangePassword = () => {
           <Lock className="size-6 text-white" />
         </div>
 
-        <h1 className="text-white text-3xl mt-5 font-semibold tracking-tight">
+        <h1 className="text-white text-3xl mt-5 font-semibold">
           Change Password
         </h1>
 
