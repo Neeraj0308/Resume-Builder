@@ -61,7 +61,7 @@ const Signup = () => {
           <UserPlus className="size-6 text-white" />
         </div>
 
-        <h1 className="text-white text-3xl mt-5 font-semibold tracking-tight">
+        <h1 className="text-white text-3xl mt-5 font-semibold">
           Create account
         </h1>
 

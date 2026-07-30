@@ -65,7 +65,7 @@ const Navbar = () => {
   return (
     <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
       <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-        <h2 className="text-xl font-bold text-gray-800 tracking-tight">
+        <h2 className="text-xl font-bold text-gray-800">
           <Link
             to={"/app"}
             className="inline-flex gap-2 items-center text-slate-500 hover:text-slate-700 transition-all"

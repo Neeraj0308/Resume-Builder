@@ -99,7 +99,7 @@ const VerifyEmailOtp = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-950 px-4">
       <div className="w-full max-w-md bg-white/3 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl p-8">
-        <h2 className="text-2xl font-semibold text-white mb-1 tracking-tight">
+        <h2 className="text-2xl font-semibold text-white mb-1">
           Verify Email
         </h2>
         <p className="text-sm text-gray-400 mb-6">
