@@ -93,7 +93,7 @@ const ProjectForm = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-gray-600">
-                    Project Name <span className="text-red-500">*</span>
+                    Project Name 
                   </label>
                   <input
                     type="text"
@@ -139,7 +139,7 @@ const ProjectForm = ({
 
                 <div className="md:col-span-2 space-y-1">
                   <label className="text-xs font-medium text-gray-600">
-                    Description <span className="text-red-500">*</span>
+                    Description 
                   </label>
                   <textarea
                     rows={4}
