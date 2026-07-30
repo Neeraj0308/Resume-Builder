@@ -59,7 +59,7 @@ const startServer = async () => {
     app.use("/api/upload", uploadRoutes);
     app.use("/api/dashboard", dashboardRoutes);
     app.use("/api/pdf", pdfRoutes);
-    // app.use("/api/otp", otpRoutes);
+    app.use("/api/otp", otpRoutes);
     app.use("/api/ai", aiRoutes);
 
     // Test Route

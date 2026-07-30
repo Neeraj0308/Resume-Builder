@@ -200,6 +200,7 @@ export const resendOTP = async (req, res) => {
     await OTP.create({
       email,
       otp,
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
     });
 
     // Send Email
@@ -216,7 +217,7 @@ export const resendOTP = async (req, res) => {
     });
 
     return res.status(200).json({
-      success: false,
+      success: true,
       message: "New OTP sent successfully",
     });
   } catch (error) {

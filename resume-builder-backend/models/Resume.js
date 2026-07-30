@@ -59,12 +59,31 @@ const resumeSchema = new mongoose.Schema(
 
     skills: [String],
 
-    Project: [
+    projects: [
       {
-        name: String,
-        type: String,
-        description: String,
-        link: String,
+        name: {
+          type: String,
+          default: "",
+          trim: true,
+        },
+
+        type: {
+          type: String,
+          default: "",
+          trim: true,
+        },
+
+        description: {
+          type: String,
+          default: "",
+          trim: true,
+        },
+
+        link: {
+          type: String,
+          default: "",
+          trim: true,
+        },
       },
     ],
   },
